@@ -8,28 +8,6 @@ it from c++. I am using the boost libraries and it seams to be threadsafe,but yo
 
 *Usage Example with c++ wrangler*:
 
-DLLs:   
-boost_numpy36-vc141-mt-x64-1_69.dll    
-boost_python36-vc141-mt-x64-1_69.dll
-__________________________
-Include:   
-#include <boost/python.hpp>   
-#include <boost/python/extract.hpp>  
-#include <boost/python/numpy.hpp>   
-#include <boost/python/tuple.hpp>    
-#include <Python.h>   
-__________________________
-Include Directories:    
-BoostFolder/   
-Python3Path/include   
-__________________________
-Link Libraries:   
-BoostFolder/stage/lib/boost_python36-vc141-mt-x64-1_69.lib  
-BoostFolder/stage/lib/boost_numpy36-vc141-mt-x64-1_69.lib  
-Python3Path/libs/python36.lib   
-__________________________
-
-
 ```c++
 void py3( GU_Detail *gdp) {
 
@@ -82,6 +60,18 @@ def myfunc(pos) :
   return test_y[:, 0], test_y[:, 1], test_y[:, 2]
 
 ````
+Dynamic-Links:
+
+boost_numpy36-vc141-mt-x64-1_69.dll    
+boost_python36-vc141-mt-x64-1_69.dll
+__________________________
+
+![Image of Yaktocat](https://i.ibb.co/9VbB3Cw/test.jpg)
+
+
+
+
+
 
 
 
