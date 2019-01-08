@@ -82,3 +82,37 @@ def myfunc(pos) :
   return test_y[:, 0], test_y[:, 1], test_y[:, 2]
 
 ````
+
+
+
+
+
+
+### MatrixLib for Vex  
+
+alternatively you can use https://github.com/jakericedesigns/Houdini-Matrix-Library
+
+Plugin
+```c++
+void      NxMat		(Array, Row, Cols )					Initalize Matrix
+float     NxRows	(Array)							return Number of Rows Matrix
+float     NxCols 	(Array)							return Number of Cols Matrix
+void      NxSet		(Array,RowNr,ColNr,Value) 				
+float     NxGet		(Array,RowNr,ColNr) 			
+void   	  NxPrint	(Array)
+vector2   NxFind	(Array,value) 						//Findsvalue and returns row col	
+array 	  NxGetRow	(Array,ArraySourceRowNr) 				[:,0]
+array 	  NxGetCol	(Array,ArraySourceColNr)				[0:,]
+void      NxAttrib 	(ArrayTarget,GeoInput,Class,AttributeName,set/add)   	
+
+void	NxTranspose			(ArrayTarget, ArraySource) 
+void	NxMultiply  			(ArrayTarget, ArraySourceA, ArraySource B)   A * B
+void	NxProduct			(ArrayTarget, ArraySourceA, ArraySource B)   hadmard product 
+void	NxInverse			(ArrayTarget, ArraySource)
+void	NxAdd				(ArrayTarget, ArraySourceA, ArraySource B)    A+B
+void	NxSub				(ArrayTarget, ArraySourceA, ArraySource B)    A-B
+void	NxFill				(ArrayTarget, value)
+void  	NxPow				(ArrayTarget, value) 
+float 	NxSum 				(ArrayTarget)            
+float 	NxTrace				(ArrayTarget)	 
+````
