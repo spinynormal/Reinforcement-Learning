@@ -10,7 +10,7 @@ it from c++. I am using the boost libraries and it seams to be threadsafe,but yo
 
 ```c++
 
-void curvefitting( GU_Detail *news,const char *str) {
+void curvefitting( GU_Detail *Geo,const char *str) {
 //get Data from second Input
 OP_Node *   node = OPgetDirector()->findNode(str);
 SOP_Node * parent = node->castToSOPNode();
@@ -21,7 +21,7 @@ int ptCount2 = cookedgdp->getNumPoints();
 
 //Stash Stuff
 GU_Detail *gdp = new GU_Detail;
-gdp->duplicate(*news);
+gdp->duplicate(*Geo);
 news->stashAll();
 int ptCount = gdp->getNumPoints();
 
@@ -45,8 +45,6 @@ for (int i = 0; i != ptCount; i++) {
                 A[i][1] = vec.y();
                 A[i][2] = vec.z();
 }
-        
-        
           
 //Run Python3 File     
 auto b = rand_func(A,ptCount,100);
@@ -56,11 +54,10 @@ auto x = b[0];
 auto y = b[1];
 auto z = b[2];        
       
-      
 //SetPosition   
 for (int i = 0; i < ptCount; i++) {
-                i = news->appendPoint();
-                news->setPos3(i, UT_Vector3F(
+                i = Geo->appendPoint();
+                Geo->setPos3(i, UT_Vector3F(
                    p::extract<double>(x[i]),
                    p::extract<double>(y[i]),
                    p::extract<double>(z[i])
