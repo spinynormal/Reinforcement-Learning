@@ -9,70 +9,98 @@ it from c++. I am using the boost libraries and it seams to be threadsafe,but yo
 *Usage Example with c++ wrangler*:
 
 ```c++
-void py3( GU_Detail *gdp) {
 
-        wchar_t *program = Py_DecodeLocale("PATH TO PYTHON3/", NULL);
-        Py_SetPythonHome(program);
-        Py_Initialize();
-        boost::python::numpy::initialize();
+void curvefitting( GU_Detail *news,const char *str) {
+//get Data from second Input
+OP_Node *   node = OPgetDirector()->findNode(str);
+SOP_Node * parent = node->castToSOPNode();
+fpreal now = OPgetDirector()->getTime();
+OP_Context  context(now);
+const GU_Detail *cookedgdp = parent->getCookedGeo(context);
+int ptCount2 = cookedgdp->getNumPoints();
 
-			
-boost::python::object rand_mod = boost::python::import("HelloWorld");
-boost::python::object rand_func = rand_mod.attr("myfunc");
-			        
-boost::python::tuple shapeA = boost::python::make_tuple(ptCount, 3);
-boost::python::numpy::ndarray A = np::zeros(shapeA, np::dtype::get_builtin<double>());
-				
+//Stash Stuff
+GU_Detail *gdp = new GU_Detail;
+gdp->duplicate(*news);
+news->stashAll();
+int ptCount = gdp->getNumPoints();
+
+//Python3 Initialization
+wchar_t *program = Py_DecodeLocale("YOURPYTHON3PATH", NULL);
+Py_SetPythonHome(program);
+Py_Initialize();
+np::initialize();
+
+//Load Python File_________________________ 
+p::object rand_mod = boost::python::import("Fitt");
+p::object rand_func = rand_mod.attr("Curve");
+        
+//HOUDINI -> BOOST                            
+p::tuple shapeA = boost::python::make_tuple(ptCount, 3);
+np::ndarray A = np::zeros(shapeA, np::dtype::get_builtin<double>());
+                                
 for (int i = 0; i != ptCount; i++) {
-                UT_Vector3 vec = igdp->getPos3(i);
+                UT_Vector3 vec = gdp->getPos3(i);
                 A[i][0] = vec.x();
                 A[i][1] = vec.y();
                 A[i][2] = vec.z();
-    }
-        
-auto b = rand_func(A);
-auto x = b[0];         
-for (int i = 0; i < 100; i++) {
-                std::cout << p::extract<double>(x[i]) << std::endl;
-    } 
-        
 }
         
+        
+          
+//Run Python3 File     
+auto b = rand_func(A,ptCount,100);
+
+//BOOST -> HOUDINI   
+auto x = b[0];
+auto y = b[1];
+auto z = b[2];        
+      
+      
+//SetPosition   
+for (int i = 0; i < ptCount; i++) {
+                i = news->appendPoint();
+                news->setPos3(i, UT_Vector3F(
+                   p::extract<double>(x[i]),
+                   p::extract<double>(y[i]),
+                   p::extract<double>(z[i])
+                 ));                    
+}
+
 ```
 ```python
 from sklearn.neural_network import MLPRegressor
 import numpy as np
 
-def myfunc(pos) :
-  XX = np.empty([100, 3])
-  XX[:, 0] = pos2[:, 0]
-  XX[:, 1] = pos2[:, 1]
-  XX[:, 2] = pos2[:, 2]
-
-  YY = np.empty([100, 3])
-  YY[:, 0] = pos[:, 0]
-  YY[:, 1] = 0
-  YY[:, 2] = 0
-
-  clf = MLPRegressor(hidden_layer_sizes = (10, 10),activation = 'tanh', solver = 'lbfgs')
-  n = clf.fit(XX, YY)
-  test_y = clf.predict(XX)
-  return test_y[:, 0], test_y[:, 1], test_y[:, 2]
+def myfunc(A,size,hidenA) :
+	XX = np.empty([size, 3])
+	XX[:, 0] = A[:, 0]
+	XX[:, 1] = A[:, 1]
+	XX[:, 2] = A[:, 2]
+	
+	YY = np.empty([size, 3])
+	YY[:, 0] = 0
+	YY[:, 1] = 0
+	YY[:, 2] = A[:, 2]
+	
+	clf = MLPRegressor(alpha=0.001, hidden_layer_sizes = (hidenA,hidenA), max_iter = 50000, 
+        activation = 'tanh', learning_rate = 'adaptive',solver='lbfgs')
+	
+	n = clf.fit(YY, XX)
+	test_y = clf.predict(YY)
+	return test_y[:, 0], test_y[:, 1], test_y[:, 2]
 
 ````
-Dynamic-Links:
+![Image of Yaktocat](https://i.ibb.co/QYxhVYT/fit.png)
 
+
+
+Dynamic-Links:
 boost_numpy36-vc141-mt-x64-1_69.dll    
 boost_python36-vc141-mt-x64-1_69.dll
 __________________________
 
-![Image of Yaktocat](https://i.ibb.co/9VbB3Cw/test.jpg)
-
-
-
-
-
-
+![Image of Yaktocat](https://i.ibb.co/8xmdnLD/Unbenannts.png)
 
 
 
