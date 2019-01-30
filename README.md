@@ -11,13 +11,6 @@ it from c++. I am using the boost libraries and it seams to be threadsafe,but yo
 ```c++
 
 void curvefitting( GU_Detail *Geo,const char *str) {
-//get Data from second Input
-OP_Node *   node = OPgetDirector()->findNode(str);
-SOP_Node * parent = node->castToSOPNode();
-fpreal now = OPgetDirector()->getTime();
-OP_Context  context(now);
-const GU_Detail *cookedgdp = parent->getCookedGeo(context);
-int ptCount2 = cookedgdp->getNumPoints();
 
 //Stash Stuff
 GU_Detail *gdp = new GU_Detail;
@@ -95,7 +88,6 @@ def myfunc(A,size,hidenA) :
 Dynamic-Links:
 boost_numpy36-vc141-mt-x64-1_69.dll    
 boost_python36-vc141-mt-x64-1_69.dll
-__________________________
 
 ![Image of Yaktocat](https://i.ibb.co/8xmdnLD/Unbenannts.png)
 
